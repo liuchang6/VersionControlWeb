@@ -1,9 +1,9 @@
 <template>
   <el-container>
-    <el-header style="background: #fff;margin: 0;padding: 0; height: 50px">
+    <el-header style="background: #FDFEFE ;margin: 0;padding: 0; height: 50px">
       <div>
         <div class="nav-header">
-          <span style="color: white; font-size: 25px; margin-left: 10px">FasterRunner 接口自动化测试平台</span>
+          <span style="color: white; font-size: 20px; margin-left: 20px">版本控制平台</span>
           <span class="right">
             <div style="float: right; color: #d9d9d9; margin-right: 100px">
               <i class="iconfont">&#xe61c;</i>
@@ -16,46 +16,40 @@
     </el-header>
 
     <el-container>
-      <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-        <el-menu :default-openeds="['1', '3']">
-          <el-submenu index="1">
-            <template slot="title">
-              <i class="el-icon-message"></i>概览
-            </template>
-          </el-submenu>
+      <el-aside width="201px" style="background-color: #FDFEFF;">
+        <el-menu
+          class="el-menu-vertical-demo"
+          @open="handleOpen"
+          @close="handleClose"
+          background-color="#FDFEFF"
+          text-color="#595E62"
+          active-text-color="#ffd04b"
+        >
+          <el-menu-item index="1">
+            <i class="el-icon-setting"></i>
+            <span slot="title">概览</span>
+          </el-menu-item>
 
           <el-submenu index="2">
             <template slot="title">
-              <i class="el-icon-menu"></i>配置
+              <i class="el-icon-setting"></i>
+              <span>配置</span>
             </template>
             <el-menu-item-group>
-              <template slot="title">服务器</template>
+              <el-menu-item index="2-1" style="tx">服务器</el-menu-item>
+              <el-menu-item index="2-2">git仓库</el-menu-item>
             </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="2-3">git</el-menu-item>
-            </el-menu-item-group>
-           
-            <el-submenu index="2-4">
-              <template slot="title">选项4</template>
-              <el-menu-item index="2-4-1">选项4-1</el-menu-item>
-            </el-submenu>
           </el-submenu>
+
           <el-submenu index="3">
             <template slot="title">
-              <i class="el-icon-setting"></i>导航三
+              <i class="el-icon-setting"></i>
+              <span>项目</span>
             </template>
             <el-menu-item-group>
-              <template slot="title">分组一</template>
-              <el-menu-item index="3-1">选项1</el-menu-item>
-              <el-menu-item index="3-2">选项2</el-menu-item>
+              <el-menu-item index="3-1" style="tx">项目管理</el-menu-item>
+              <el-menu-item index="3-2">git仓库</el-menu-item>
             </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="3-3">选项3</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="3-4">
-              <template slot="title">选项4</template>
-              <el-menu-item index="3-4-1">选项4-1</el-menu-item>
-            </el-submenu>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -69,14 +63,19 @@
 
 <script>
 export default {
-  data() {}
+  methods: {
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    }
+  }
 };
 </script>
 
 <style scoped>
-
 .left {
-  
   width: 180px;
   left: 20px;
   display: inline-block;
@@ -103,26 +102,12 @@ export default {
 
 .nav-header {
   position: fixed;
-  background: #242f42;
+  background: #1f537e;
   margin: 0 auto;
   font-size: 14px;
   width: 100%;
-  border-bottom: 1px solid #ddd;
-  height: 49px;
-  line-height: 49px;
+  height: 50px;
+  line-height: 50px;
   z-index: 100;
-}
-
-.common-side-bar {
-  position: fixed;
-  top: 49px;
-  border-right: 1px solid #ddd;
-  height: 100%;
-  width: 202px;
-  background-color: #fff;
-  display: inline-block;
-}
-.el-main {
-  padding: 0px;
 }
 </style>
