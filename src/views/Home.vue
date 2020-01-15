@@ -16,27 +16,26 @@
     </el-header>
 
     <el-container>
-      <el-aside width="201px" style="background-color: #FDFEFF;">
+      <el-aside width="204px" style="border: 1px solid rgba(200, 200, 200, 0.1);background-color: #FDFEFF;">
         <el-menu
           class="el-menu-vertical-demo"
-          @open="handleOpen"
-          @close="handleClose"
           background-color="#FDFEFF"
           text-color="#595E62"
           active-text-color="#ffd04b"
+          router
         >
-          <el-menu-item index="1">
+          <el-menu-item index="/index">
             <i class="el-icon-setting"></i>
             <span slot="title">概览</span>
           </el-menu-item>
 
-          <el-submenu index="2">
+          <el-submenu index='/'>
             <template slot="title">
               <i class="el-icon-setting"></i>
               <span>配置</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="2-1" style="tx">服务器</el-menu-item>
+              <el-menu-item index="/server" style="tx">服务器</el-menu-item>
               <el-menu-item index="2-2">git仓库</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -54,7 +53,7 @@
         </el-menu>
       </el-aside>
 
-      <el-main>
+      <el-main >
         <router-view></router-view>
       </el-main>
     </el-container>
@@ -63,14 +62,7 @@
 
 <script>
 export default {
-  methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    }
-  }
+  
 };
 </script>
 
@@ -109,5 +101,10 @@ export default {
   height: 50px;
   line-height: 50px;
   z-index: 100;
+}
+
+.el-main {
+ padding: 5px;
+ background-color: #f7f7f9;
 }
 </style>

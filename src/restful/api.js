@@ -11,6 +11,10 @@ export const addServer = params => {
     return axios.post('/api/server/', params).then(res => res.data)
 };
 
+export const getServer = params => {
+    return axios.get('/api/server/').then(res => res.data)
+};
+
 export const deleteProject = config => {
     return axios.delete('/api/fastrunner/project/', config).then(res => res.data)
 };
