@@ -63,4 +63,9 @@ div.el-submenu__title {
   white-space: nowrap;
   list-style: none;
 }
+
+div.cell{
+    text-align: center;
+}
+
 </style>

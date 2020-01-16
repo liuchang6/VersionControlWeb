@@ -11,8 +11,13 @@ export const addServer = params => {
     return axios.post('/api/server/', params).then(res => res.data)
 };
 
-export const getServer = params => {
-    return axios.get('/api/server/').then(res => res.data)
+export const checkServer = params => {
+    return axios.post('/api/check_server/', params).then(res => res.data)
+};
+
+export const getServerList = params => {
+    console.log(params)
+    return axios.get('/api/server/',params).then(res => res.data)
 };
 
 export const deleteProject = config => {
@@ -20,7 +25,7 @@ export const deleteProject = config => {
 };
 
 export const getProjectList = params => {
-    return axios.get('/api/fastrunner/project/').then(res => res.data)
+    return axios.get('/api/fastrunner/project/',params).then(res => res.data)
 };
 
 export const getProjectDetail = pk => {
