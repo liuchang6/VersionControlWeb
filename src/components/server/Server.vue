@@ -81,8 +81,8 @@
       style="width: 100%"
     >
       <el-table-column type="index" label="序号"></el-table-column>
-      <el-table-column prop="name" label="服务器名称" width="150"></el-table-column>
-      <el-table-column prop="ip" label="服务器IP" width="120"></el-table-column>
+      <el-table-column prop="name" label="服务器名称" width="120"></el-table-column>
+      <el-table-column prop="ip" label="服务器IP" width="100"></el-table-column>
       <el-table-column prop="user" label="用户" width="80"></el-table-column>
       <el-table-column prop="creater" width="80" label="创建人"></el-table-column>
       <el-table-column prop="status" width="80" label="连接状态">
@@ -94,8 +94,9 @@
       <el-table-column prop="check_time" label="上次检测时间"></el-table-column>
       <el-table-column prop="create_time" label="创建时间"></el-table-column>
       <el-table-column prop="update_time" label="更新时间"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column width="180" label="操作">
         <template slot-scope="scope">
+           <el-button type="primary" size="mini" icon="el-icon-s-platform" @click="ssh()"></el-button>
           <el-button type="primary" size="mini" icon="el-icon-edit"></el-button>
           <el-button type="danger" size="mini" icon="el-icon-delete"></el-button>
         </template>
@@ -229,7 +230,11 @@ export default {
         this.tableData = resp["results"];
         this.total = resp["count"];
       });
-    }
+    },
+    ssh () {
+      const ref = this.$router.resolve({name: 'ssh'});
+      window.open(ref.href,'_blank');
+ },
   },
   created() {
     this.GetServerList();
@@ -296,7 +301,7 @@ i.el-icon-success {
 
 .el-pagination {
   margin: 10px;
-  margin-left: 750px;
+  margin-left: 75%px;
   padding-right: 10px;
 }
 </style>
