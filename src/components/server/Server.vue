@@ -87,8 +87,8 @@
       <el-table-column prop="creater" width="80" label="创建人"></el-table-column>
       <el-table-column prop="status" width="80" label="连接状态">
         <template slot-scope="scope">
-          <i v-if="scope.row.status === 1" style="color:#7BCA3D;" class="el-icon-success"></i>
-          <i v-if="scope.row.status === 0" style="color:#EC7575;" class="el-icon-error"></i>
+          <i v-if="scope.row.status === '1'" style="color:#7BCA3D;" class="el-icon-success"></i>
+          <i v-if="scope.row.status === '0'" style="color:#EC7575;" class="el-icon-error"></i>
         </template>
       </el-table-column>
       <el-table-column prop="check_time" label="上次检测时间"></el-table-column>
@@ -301,7 +301,7 @@ i.el-icon-success {
 
 .el-pagination {
   margin: 10px;
-  margin-left: 75%px;
+  margin-left: 75%;
   padding-right: 10px;
 }
 </style>
