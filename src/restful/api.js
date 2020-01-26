@@ -16,8 +16,19 @@ export const checkServer = params => {
 };
 
 export const getServerList = params => {
-    console.log(params)
     return axios.get('/api/server/',params).then(res => res.data)
+};
+
+export const getServer = params => {
+    return axios.get('/api/get_server/'+params).then(res => res.data)
+};
+
+export const updateServer =(id,params)  => {
+    return axios.put('/api/server/'+id+'/',params).then(res => res.data)
+};
+
+export const deleteServer =params  => {
+    return axios.delete('/api/server/'+params+'/').then(res => res.data)
 };
 
 export const deleteProject = config => {

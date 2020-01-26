@@ -55,6 +55,10 @@ li.el-submenu.is-active .el-submenu__title {
   min-width: 200px;
 }
 
+div.el-table th.is-leaf {
+    border-bottom: 1.2px solid #EBEEF5;
+}
+
 .el-menu-item,
 div.el-submenu__title {
   height: 45px;
@@ -66,6 +70,10 @@ div.el-submenu__title {
 
 div.cell{
     text-align: center;
+}
+
+button.el-button .el-button--danger .el-button--mini .el-popover__reference {
+  margin: 20px;
 }
 
 </style>

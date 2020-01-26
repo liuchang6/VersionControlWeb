@@ -25,7 +25,7 @@
       ></el-input>
     </div>
 
-    <el-dialog title="添加服务器" :visible.sync="addDialogVisible" width="35%">
+    <el-dialog :title="dialog_title" :visible.sync="addDialogVisible" width="35%">
       <el-form
         :label-position="'right'"
         :rules="rules"
@@ -47,7 +47,7 @@
           <el-input v-model="addForm.user"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="addForm.password"></el-input>
+          <el-input v-model="addForm.password" type="password"></el-input>
         </el-form-item>
         <el-form-item label="描述">
           <el-input type="textarea" style="width:290px;" v-model="addForm.desc"></el-input>
@@ -66,7 +66,15 @@
           size="small"
           :disabled="ConfirmSave"
           type="primary"
+          v-if="this.flag === 'add'"
           @click="AddServer('addForm')"
+        >确 定</el-button>
+        <el-button
+          size="small"
+          :disabled="ConfirmSave"
+          type="primary"
+          v-if="this.flag === 'update'"
+          @click="UpdateServer('addForm')"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -96,9 +104,33 @@
       <el-table-column prop="update_time" label="更新时间"></el-table-column>
       <el-table-column width="180" label="操作">
         <template slot-scope="scope">
-           <el-button type="primary" size="mini" icon="el-icon-s-platform" @click="ssh()"></el-button>
-          <el-button type="primary" size="mini" icon="el-icon-edit"></el-button>
-          <el-button type="danger" size="mini" icon="el-icon-delete"></el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-s-platform"
+            @click="ssh(scope.row.id)"
+          ></el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-edit"
+            @click="editeServerDialogVisible(scope.row.id)"
+          ></el-button>
+          <el-popconfirm
+            @onConfirm="deleteServerDialogVisible(scope.row.id)"
+            confirmButtonText="确定"
+            cancelButtonText="不用了"
+            icon="el-icon-info"
+            iconColor="red"
+            title="确定删除吗？"
+          >
+            <el-button
+              type="danger"
+              size="mini"
+              icon="el-icon-delete"
+              slot="reference"
+            ></el-button>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -125,6 +157,12 @@ export default {
     };
     return {
       addForm: {
+        name: "",
+        ip: "",
+        port: "",
+        user: "",
+        password: "",
+        creater: "admin",
         desc: "",
         check_time: "",
         create_time: "",
@@ -149,6 +187,9 @@ export default {
       search: "",
       tableData: [],
       total: 0,
+      dialog_title: "",
+      flag: "",
+      serverid: "",
       addDialogVisible: false,
       CheckLoading: false,
       ConfirmSave: true
@@ -156,6 +197,29 @@ export default {
   },
   methods: {
     addServerDialogVisible() {
+      if (this.$refs["addForm"] !== undefined) {
+        this.$refs["addForm"].resetFields();
+      }
+      this.flag = "add";
+      this.dialog_title = "添加服务器";
+      this.ConfirmSave = true;
+      this.CheckLoading = false;
+      this.addDialogVisible = true;
+    },
+    editeServerDialogVisible(id) {
+      this.$api.getServer(id).then(resp => {
+        this.addForm.name = resp["data"]["name"];
+        this.addForm.ip = resp["data"]["ip"];
+        this.addForm.port = resp["data"]["port"];
+        this.addForm.user = resp["data"]["user"];
+        this.addForm.password = window.atob(resp["data"]["password"]);
+        this.addForm.desc = resp["data"]["desc"];
+      });
+      this.flag = "update";
+      this.serverid = id;
+      this.dialog_title = "编辑服务器";
+      this.ConfirmSave = true;
+      this.CheckLoading = false;
       this.addDialogVisible = true;
     },
     CheckServer(addForm) {
@@ -217,6 +281,52 @@ export default {
         }
       });
     },
+    UpdateServer(addForm) {
+      this.$refs[addForm].validate(valid => {
+        if (valid) {
+          this.$api.updateServer(this.serverid, this.addForm).then(resp => {
+            if (resp.success) {
+              this.$notify({
+                message: resp["msg"],
+                type: "success",
+                duration: 2000
+              });
+              this.GetServerList();
+              this.addDialogVisible = false;
+            } else {
+              this.$notify.error({
+                message: resp["msg"],
+                duration: 2000
+              });
+            }
+          });
+        } else {
+          this.$notify.error({
+            message: "服务器错误",
+            duration: 2000
+          });
+        }
+      });
+    },
+    deleteServerDialogVisible(id) {
+      this.$api.deleteServer(id).then(resp => {
+            if (resp.success) {
+              this.GetServerList();
+              this.$notify({
+                message: resp["msg"],
+                type: "success",
+                duration: 2000
+              });
+              }
+              else {
+              this.$notify.error({
+                message: resp["msg"],
+                duration: 2000
+              });
+              }
+              });
+     
+    },
     handleCurrentChange(val) {
       this.$api.getServerList({ params: { page: val } }).then(resp => {
         console.log(resp);
@@ -226,15 +336,21 @@ export default {
     },
     GetServerList() {
       this.$api.getServerList().then(resp => {
-        console.log(resp);
         this.tableData = resp["results"];
         this.total = resp["count"];
       });
     },
-    ssh () {
-      const ref = this.$router.resolve({name: 'ssh'});
-      window.open(ref.href,'_blank');
- },
+    ssh(id) {
+      console.log(id);
+      console.log(this.$store.state.serverid);
+      this.$store.commit("store_serverid", id);
+      const ref = this.$router.resolve({
+        name: "ssh",
+        query: { serverid: id }
+      });
+      console.log(this.$store.state.serverid);
+      window.open(ref.href, "_blank");
+    }
   },
   created() {
     this.GetServerList();
@@ -273,9 +389,6 @@ div.el-input {
   margin-top: 10px;
 }
 
-.check_btn {
-}
-
 .search_input {
   margin-left: 800px;
 }
@@ -294,9 +407,14 @@ i.el-icon-success {
   top: -10px;
 }
 
+button.el-button--danger {
+  margin-left: 10px;
+ 
+}
+
 .el-button--mini,
 .el-button--mini.is-round {
-  padding: 5px 12px;
+  padding: 9px 16px;
 }
 
 .el-pagination {

@@ -11,14 +11,16 @@ import { FitAddon } from 'xterm-addon-fit';
 import { AttachAddon } from 'xterm-addon-attach';
 export default {
   name: 'Console',
-  
   data () {
     return {
       term: null,
-      terminalSocket: null
+      terminalSocket: null,
+      serverid: this.$store.state.serverid,
     }
   },
-  mounted () {
+  created () {
+    console.log(this.serverid);
+    
     let terminalContainer = document.getElementById('terminal')
     this.term = new Terminal(
       {
@@ -35,9 +37,9 @@ export default {
     const fitAddon = new FitAddon();
     this.term.open(terminalContainer)
     // open websocket
-    var pwd = 'jHdCGHMn+Xs=';
+    var pwd = 'Liu7792049';
     var password = window.btoa(pwd);
-    const terminalSocket = new WebSocket("ws://127.0.0.1:3000/terminals/?host=172.24.8.133&port=3222&user=root&password="+password);
+    const terminalSocket = new WebSocket("ws://127.0.0.1:3000/terminals/?host=49.235.71.24&port=22&user=root&password="+password);
     const attachAddon = new AttachAddon(terminalSocket)
     this.term.loadAddon(attachAddon)
     this.term.loadAddon(fitAddon)
