@@ -35,7 +35,7 @@
               <span>配置</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/server" style="tx">服务器</el-menu-item>
+              <el-menu-item index="/index/server" style="tx">服务器</el-menu-item>
               <el-menu-item index="2-2">git仓库</el-menu-item>
             </el-menu-item-group>
           </el-submenu>

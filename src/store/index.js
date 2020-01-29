@@ -5,11 +5,19 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    serverid:'',
+    routerName: null,
+    token: null,
+    user: null
   },
   mutations: {
-    store_serverid(state,id){
-      state.serverid = id;
+    isLogin(state, value) {
+      state.token = value;
+    },
+    setUser(state, value) {
+      state.user = value;
+    },
+    setRouterName(state, value) {
+      state.routerName = value
     }
   },
   actions: {

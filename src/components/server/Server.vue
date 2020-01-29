@@ -167,7 +167,7 @@ export default {
         check_time: "",
         create_time: "",
         update_time: "",
-        status: 1
+        status: 1,
       },
       rules: {
         port: [{ required: true, message: "端口不能为空", trigger: "blur" }],
@@ -329,7 +329,6 @@ export default {
     },
     handleCurrentChange(val) {
       this.$api.getServerList({ params: { page: val } }).then(resp => {
-        console.log(resp);
         this.tableData = resp["results"];
         this.total = resp["count"];
       });
