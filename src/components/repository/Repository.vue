@@ -2,7 +2,7 @@
   <el-card class="box-card">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item>配置</el-breadcrumb-item>
-      <el-breadcrumb-item>服务器</el-breadcrumb-item>
+      <el-breadcrumb-item>代码仓库</el-breadcrumb-item>
     </el-breadcrumb>
 
     <div>
@@ -11,7 +11,7 @@
         size="mini"
         type="primary"
         icon="el-icon-plus"
-        @click="addServerDialogVisible()"
+        @click="addRepositoryDialogVisible()"
       >添加</el-button>
 
       <el-input
@@ -37,11 +37,11 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="IP" prop="ip">
-          <el-input v-model="addForm.ip"></el-input>
-        </el-form-item>
-        <el-form-item label="端口" prop="port">
-          <el-input v-model="addForm.port"></el-input>
+        <el-form-item label="URL" prop="url">
+          <el-tooltip v-if="this.addForm.url !== ''" class="item" effect="light" :content="this.addForm.url" placement="right" style="margin-bottom: 0px;">
+            <el-input v-model="addForm.url"></el-input>
+          </el-tooltip>
+          <el-input v-else v-model="addForm.url"></el-input>
         </el-form-item>
         <el-form-item label="用户名" prop="user">
           <el-input v-model="addForm.user"></el-input>
@@ -60,21 +60,21 @@
           :loading="CheckLoading"
           size="small"
           type="primary"
-          @click="CheckServer('addForm')"
+          @click="CheckRepository('addForm')"
         >测试</el-button>
         <el-button
           size="small"
           :disabled="ConfirmSave"
           type="primary"
           v-if="this.flag === 'add'"
-          @click="AddServer('addForm')"
+          @click="AddRepository('addForm')"
         >确 定</el-button>
         <el-button
           size="small"
           :disabled="ConfirmSave"
           type="primary"
           v-if="this.flag === 'update'"
-          @click="UpdateServer('addForm')"
+          @click="UpdateRepository('addForm')"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -89,8 +89,8 @@
       style="width: 100%"
     >
       <el-table-column type="index" label="序号"></el-table-column>
-      <el-table-column prop="name" label="服务器名称" width="120"></el-table-column>
-      <el-table-column prop="ip" label="服务器IP" width="100"></el-table-column>
+      <el-table-column :show-overflow-tooltip="true" prop="name" label="仓库名称" width="120"></el-table-column>
+      <el-table-column :show-overflow-tooltip="true" prop="url" label="仓库地址" width="280"></el-table-column>
       <el-table-column prop="user" label="用户" width="80"></el-table-column>
       <el-table-column prop="creater" width="80" label="创建人"></el-table-column>
       <el-table-column prop="status" width="80" label="连接状态">
@@ -107,17 +107,11 @@
           <el-button
             type="primary"
             size="mini"
-            icon="el-icon-s-platform"
-            @click="ssh(scope.row.id)"
-          ></el-button>
-          <el-button
-            type="primary"
-            size="mini"
             icon="el-icon-edit"
-            @click="editeServerDialogVisible(scope.row.id)"
+            @click="editeRepositoryDialogVisible(scope.row.id)"
           ></el-button>
           <el-popconfirm
-            @onConfirm="deleteServerDialogVisible(scope.row.id)"
+            @onConfirm="deleteRepositoryDialogVisible(scope.row.id)"
             confirmButtonText="确定"
             cancelButtonText="不用了"
             icon="el-icon-info"
@@ -147,19 +141,10 @@
 <script>
 export default {
   data() {
-    var validcodeip = (rule, value, callback) => {
-      const reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
-      if (reg.test(value)) {
-        callback();
-      } else {
-        return callback(new Error("输入格式不合法！"));
-      }
-    };
     return {
       addForm: {
         name: "",
-        ip: "",
-        port: "",
+        url: "",
         user: "",
         password: "",
         creater: this.getLocalValue('_user'),
@@ -167,66 +152,62 @@ export default {
         check_time: "",
         create_time: "",
         status: 1,
+        branches:"",
       },
       rules: {
-        port: [{ required: true, message: "端口不能为空", trigger: "blur" }],
         name: [{ required: true, message: "名称不能为空", trigger: "blur" }],
-        password: [
-          { required: true, message: "密码不能为空", trigger: "blur" }
-        ],
+        password: [{ required: true, message: "密码不能为空", trigger: "blur" }],
         user: [{ required: true, message: "用户不能为空", trigger: "blur" }],
-        ip: [
-          { required: true, message: "ip不能为空", trigger: "blur" },
-          {
-            validator: validcodeip,
-            trigger: "blur"
-          }
-        ]
+        url: [{ required: true, message: "url不能为空", trigger: "blur" },]
       },
       search: "",
       tableData: [],
       total: 0,
       dialog_title: "",
       flag: "",
-      serverid: "",
+      repositoryid: "",
       addDialogVisible: false,
       CheckLoading: false,
       ConfirmSave: true
     };
   },
   methods: {
-    addServerDialogVisible() {
+    addRepositoryDialogVisible() {
       if (this.$refs["addForm"] !== undefined) {
         this.$refs["addForm"].resetFields();
-      }
+        this.addForm.desc='';
+      };
       this.flag = "add";
-      this.dialog_title = "添加服务器";
+      this.dialog_title = "添加代码仓库";
       this.ConfirmSave = true;
       this.CheckLoading = false;
       this.addDialogVisible = true;
     },
-    editeServerDialogVisible(id) {
-      this.$api.getServer(id).then(resp => {
+    editeRepositoryDialogVisible(id) {
+      if (this.$refs["addForm"] !== undefined) {
+        this.$refs["addForm"].resetFields();
+      };
+      this.$api.getRepository(id).then(resp => {
         this.addForm.name = resp["data"]["name"];
-        this.addForm.ip = resp["data"]["ip"];
-        this.addForm.port = resp["data"]["port"];
+        this.addForm.url = resp["data"]["url"];
         this.addForm.user = resp["data"]["user"];
         this.addForm.password = window.atob(resp["data"]["password"]);
         this.addForm.desc = resp["data"]["desc"];
       });
       this.flag = "update";
-      this.serverid = id;
-      this.dialog_title = "编辑服务器";
+      this.repositoryid = id;
+      this.dialog_title = "编辑代码仓库";
       this.ConfirmSave = true;
       this.CheckLoading = false;
       this.addDialogVisible = true;
     },
-    CheckServer(addForm) {
+    CheckRepository(addForm) {
       this.CheckLoading = true;
       this.$refs[addForm].validate(valid => {
         if (valid) {
-          this.$api.checkServer(this.addForm).then(resp => {
+          this.$api.checkRepository(this.addForm).then(resp => {
             if (resp.success) {
+              this.addForm.branches = String(resp.data);
               this.$notify({
                 message: resp["msg"],
                 type: "success",
@@ -253,17 +234,17 @@ export default {
         }
       });
     },
-    AddServer(addForm) {
+    AddRepository(addForm) {
       this.$refs[addForm].validate(valid => {
         if (valid) {
-          this.$api.addServer(this.addForm).then(resp => {
+          this.$api.addRepository(this.addForm).then(resp => {
             if (resp.success) {
               this.$notify({
                 message: resp["msg"],
                 type: "success",
                 duration: 2000
               });
-              this.GetServerList();
+              this.GetRepositoryList();
               this.addDialogVisible = false;
             } else {
               this.$notify.error({
@@ -280,17 +261,17 @@ export default {
         }
       });
     },
-    UpdateServer(addForm) {
+    UpdateRepository(addForm) {
       this.$refs[addForm].validate(valid => {
         if (valid) {
-          this.$api.updateServer(this.serverid, this.addForm).then(resp => {
+          this.$api.updateRepository(this.repositoryid, this.addForm).then(resp => {
             if (resp.success) {
               this.$notify({
                 message: resp["msg"],
                 type: "success",
                 duration: 2000
               });
-              this.GetServerList();
+              this.GetRepositoryList();
               this.addDialogVisible = false;
             } else {
               this.$notify.error({
@@ -307,10 +288,10 @@ export default {
         }
       });
     },
-    deleteServerDialogVisible(id) {
-      this.$api.deleteServer(id).then(resp => {
+    deleteRepositoryDialogVisible(id) {
+      this.$api.deleteRepository(id).then(resp => {
             if (resp.success) {
-              this.GetServerList();
+              this.GetRepositoryList();
               this.$notify({
                 message: resp["msg"],
                 type: "success",
@@ -327,34 +308,20 @@ export default {
      
     },
     handleCurrentChange(val) {
-      this.$api.getServerList({ params: { page: val } }).then(resp => {
+      this.$api.getRepositoryList({ params: { page: val } }).then(resp => {
         this.tableData = resp["results"];
         this.total = resp["count"];
       });
     },
-    GetServerList() {
-      this.$api.getServerList().then(resp => {
+    GetRepositoryList() {
+      this.$api.getRepositoryList().then(resp => {
         this.tableData = resp["results"];
         this.total = resp["count"];
       });
     },
-    ssh(id) {
-      this.$api.getServer(id).then(resp => {
-        console.log(resp.data.password);
-         this.setLocalValue("pw", resp.data.password);
-         this.setLocalValue("user", resp.data.user);
-         this.setLocalValue("ip", resp.data.ip);
-         this.setLocalValue("port", resp.data.port);
-      });
-      const ref = this.$router.resolve({
-        name: "ssh",
-        query: { serverid: id }
-      });
-      window.open(ref.href, "_blank");
-    }
   },
   created() {
-    this.GetServerList();
+    this.GetRepositoryList();
   }
 };
 </script>

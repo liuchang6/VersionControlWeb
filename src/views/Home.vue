@@ -7,8 +7,8 @@
           <span class="right">
             <div style="float: right; color: #d9d9d9; margin-right: 100px">
               <i class="iconfont">&#xe61c;</i>
-              <span v-text="this.$store.user" style="padding-left: 5px; font-size: large"></span>
-              <a style="padding-left: 10px;">注 销</a>
+              <span v-text="this.getLocalValue('_user')" style="padding-left: 5px; font-size: large">aaa</span>
+              <a style="padding-left: 10px;" @click="LogOut()">注 销</a>
             </div>
           </span>
         </div>
@@ -16,7 +16,10 @@
     </el-header>
 
     <el-container>
-      <el-aside width="204px" style="border: 1px solid rgba(200, 200, 200, 0.1);background-color: #FDFEFF;">
+      <el-aside
+        width="204px"
+        style="border: 1px solid rgba(200, 200, 200, 0.1);background-color: #FDFEFF;"
+      >
         <el-menu
           class="el-menu-vertical-demo"
           background-color="#FDFEFF"
@@ -24,19 +27,19 @@
           active-text-color="#ffd04b"
           router
         >
-          <el-menu-item index="/index">
+          <el-menu-item index="/index/overview">
             <i class="el-icon-setting"></i>
             <span slot="title">概览</span>
           </el-menu-item>
 
-          <el-submenu index='/'>
+          <el-submenu index="/">
             <template slot="title">
               <i class="el-icon-setting"></i>
               <span>配置</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/index/server" style="tx">服务器</el-menu-item>
-              <el-menu-item index="2-2">git仓库</el-menu-item>
+              <el-menu-item index="/index/server" >服务器</el-menu-item>
+              <el-menu-item index="/index/repository">代码仓库</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -53,7 +56,7 @@
         </el-menu>
       </el-aside>
 
-      <el-main >
+      <el-main>
         <router-view></router-view>
       </el-main>
     </el-container>
@@ -61,9 +64,17 @@
 </template>
 
 <script>
-export default {
-  
-};
+ export default {
+        methods: {
+            LogOut () {
+                this.$store.commit("isLogin", null);
+                this.setLocalValue("token", null);
+                this.setLocalValue("user", '');
+                this.$router.push({name:"login"});
+            }
+        },
+        name: "Header",
+    }
 </script>
 
 <style scoped>
@@ -104,7 +115,7 @@ export default {
 }
 
 .el-main {
- padding: 5px;
- background-color: #f7f7f9;
+  padding: 5px;
+  background-color: #f7f7f9;
 }
 </style>

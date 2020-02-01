@@ -99,14 +99,14 @@
             },
             handleLoginSuccess(resp) {
                 if (resp.success) {
-                    this.$router.push({name: 'index'});
-                    this.$store.commit("isLogin", resp.token);
-                    this.$store.commit("setUser", resp.user);
-                    this.$store.commit("setRouterName",'index');
+                    this.$router.push({name: 'server'});
+                    this.setLocalValue("token", resp.token);
+                    this.setLocalValue("_user", resp.user);
+                    this.setLocalValue("isLogin", resp.success);
                 } else {
                     console.log(resp);
                     this.$message.error({
-                        message: resp.non_field_errors,
+                        message: resp.msg,
                         duration: 2000,
                         center: true
                     })

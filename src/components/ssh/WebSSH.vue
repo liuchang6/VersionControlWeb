@@ -15,13 +15,18 @@ export default {
     return {
       term: null,
       terminalSocket: null,
-      serverid: this.$store.state.serverid,
     }
   },
   created () {
-    console.log(this.serverid);
+    let password = this.getLocalValue("pw");
+    let user = this.getLocalValue("user");
+    let ip = this.getLocalValue("ip");
+    let port = this.getLocalValue("port");
     
+    console.log(password,user,ip,port)
+
     let terminalContainer = document.getElementById('terminal')
+
     this.term = new Terminal(
       {
       convertEol: true,
@@ -37,9 +42,7 @@ export default {
     const fitAddon = new FitAddon();
     this.term.open(terminalContainer)
     // open websocket
-    var pwd = 'Liu7792049';
-    var password = window.btoa(pwd);
-    const terminalSocket = new WebSocket("ws://127.0.0.1:3000/terminals/?host=49.235.71.24&port=22&user=root&password="+password);
+    const terminalSocket = new WebSocket("ws://127.0.0.1:3000/terminals/?password="+password+"&user="+user+"&host="+ip+"&port="+port);
     const attachAddon = new AttachAddon(terminalSocket)
     this.term.loadAddon(attachAddon)
     this.term.loadAddon(fitAddon)
