@@ -1,32 +1,81 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <style lang="less">
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+}
+
+body {
+  color: #333;
+  font-family: "PingFang SC", "Helvetica Neue", Helvetica, "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  margin: 0;
+  padding: 0;
+}
+div.el-menu-item-group__title {
+  display: none;
+  padding-left: 38px;
 }
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+div.el-submenu__title {
+  border: 1px solid rgba(200, 200, 200, 0.1);
 }
+
+li.el-menu-item {
+  border: 1px solid rgba(200, 200, 200, 0.1);
+  height: 45px;
+  line-height: 42px;
+  width: 201px;
+}
+
+li.el-menu-item.is-active {
+  background-color: aquamarine;
+}
+
+li.el-submenu.is-active .el-submenu__title {
+  border-bottom-color: #ffffff;
+}
+
+.el-submenu li.el-menu-item {
+  height: 45px;
+  line-height: 42px;
+  padding: 0 36px;
+  min-width: 200px;
+}
+
+div.el-table th.is-leaf {
+    border-bottom: 1.2px solid #EBEEF5;
+}
+
+.el-menu-item,
+div.el-submenu__title {
+  height: 45px;
+  line-height: 42px;
+  position: relative;
+  white-space: nowrap;
+  list-style: none;
+}
+
+div.cell{
+    text-align: center;
+}
+
+button.el-button .el-button--danger .el-button--mini .el-popover__reference {
+  margin: 20px;
+}
+
+
+
 </style>

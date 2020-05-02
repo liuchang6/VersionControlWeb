@@ -1,18 +1,121 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <el-container>
+    <el-header style="background: #FDFEFE ;margin: 0;padding: 0; height: 50px">
+      <div>
+        <div class="nav-header">
+          <span style="color: white; font-size: 20px; margin-left: 20px">版本控制平台</span>
+          <span class="right">
+            <div style="float: right; color: #d9d9d9; margin-right: 100px">
+              <i class="iconfont">&#xe61c;</i>
+              <span v-text="this.getLocalValue('_user')" style="padding-left: 5px; font-size: large">aaa</span>
+              <a style="padding-left: 10px;" @click="LogOut()">注 销</a>
+            </div>
+          </span>
+        </div>
+      </div>
+    </el-header>
+
+    <el-container>
+      <el-aside
+        width="204px"
+        style="border: 1px solid rgba(200, 200, 200, 0.1);background-color: #FDFEFF;"
+      >
+        <el-menu
+          class="el-menu-vertical-demo"
+          background-color="#FDFEFF"
+          text-color="#595E62"
+          active-text-color="#ffd04b"
+          router
+        >
+          <el-menu-item index="/index/overview">
+            <i class="el-icon-setting"></i>
+            <span slot="title">概览</span>
+          </el-menu-item>
+
+          <el-submenu index="/">
+            <template slot="title">
+              <i class="el-icon-setting"></i>
+              <span>配置</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item index="/index/server" >服务器</el-menu-item>
+              <el-menu-item index="/index/repository">代码仓库</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+
+          <el-submenu index="3">
+            <template slot="title">
+              <i class="el-icon-setting"></i>
+              <span>项目</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item index="3-1" style="tx">项目管理</el-menu-item>
+              <el-menu-item index="3-2">git仓库</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+        </el-menu>
+      </el-aside>
+
+      <el-main>
+        <router-view></router-view>
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
-export default {
-  name: 'home',
-  components: {
-    HelloWorld
-  }
-}
+ export default {
+        methods: {
+            LogOut () {
+                this.$store.commit("isLogin", null);
+                this.setLocalValue("token", null);
+                this.setLocalValue("user", '');
+                this.$router.push({name:"login"});
+            }
+        },
+        name: "Header",
+    }
 </script>
+
+<style scoped>
+.left {
+  width: 180px;
+  left: 20px;
+  display: inline-block;
+  position: fixed;
+  z-index: 900;
+  top: -5px;
+}
+
+.right {
+  position: fixed;
+  left: 300px;
+  right: 0;
+  top: 0;
+}
+
+.right div a:hover {
+  color: darkcyan;
+}
+
+.logo {
+  background: white;
+  height: 40px;
+}
+
+.nav-header {
+  position: fixed;
+  background: #1f537e;
+  margin: 0 auto;
+  font-size: 14px;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  z-index: 100;
+}
+
+.el-main {
+  padding: 5px;
+  background-color: #f7f7f9;
+}
+</style>
